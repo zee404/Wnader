@@ -1,0 +1,514 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+    <!-- Select 2 css-->
+    <link href=" {% static 'libs/select2/css/select2.min.css" rel="stylesheet" type="text/css' %}"/>
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+{% endblock css %}
+{% block main-content %}
+    <div class="page-content pt-0 mb-4" id="plan_detail">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <h1 class="mb-3 display-4 font-weight-bold" style="color:#023378 ">WANDER AROUNT WITH WANDER</h1>
+                    <br>
+                    <br>
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Destination</h3>
+                                <p> {{ destination }} </p>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Date</h3>
+                                <p> {{ begin_date }} to {{ end_date }}</p>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">People</h3>
+                                <p> {{ people }}</p>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Budget</h3>
+                                <p> min:${{ low }} max: ${{ high }}</p>
+                            </div>
+                        </div>
+                        <br>
+                        <h4 class="mb-3 ">Select your Preferences</h4>
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Type of Attractions</h3>
+                                <p>
+                                    {% for attraction in attractions %}
+                                        <span class="badge badge-primary mx-1"
+                                              style="font-size: 12px; background-color: #023378 ">{{ attraction }}</span>
+
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Type of Cuisines</h3>
+                                <p>
+                                    {% for cuisine in cuisines %}
+                                        <span class="badge badge-primary mx-1"
+                                              style="font-size: 12px; background-color: #023378 ">{{ cuisine }}</span>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            {#                            <div class="col-lg-3 col-sm-12 d-flex  justify-content-start">#}
+                            {#                                <button type="button" onclick="generate_plan()" class="btn btn-primary mt-auto btn-md">#}
+                            {#                                    Generate Plan#}
+                            {#                                </button>#}
+                            {#                            </div>#}
+                        </div>
+                        {#                      <div class="col-lg-12 col-sm-12 d-flex  justify-content-end">#}
+                        {#                                <button type="button" onclick="generate_plan()" class="btn btn-primary mt-auto btn-md">#}
+                        {#                                    Plan#}
+                        {#                                </button>#}
+                        {#                            </div>#}
+                    </div>
+                    <h3 class="text-primary font-weight-bold">Your trip plan</h3>
+                    {#                HOTELS SECTION#}
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-lg-2 d-flex align-items-center ">
+                                <a class="nav-link text-primary font-size-14 font-weight-bold " href="#" id=""
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="bx bx-landscape mr-2"></i>Hotels
+                                </a>
+                            </div>
+                            <div class="col-lg-10">
+                                <!-- Nav tabs -->
+                                {#                            TO SHOW TABS FOR DAYS #}
+                                <div style="overflow-x: auto;  white-space: nowrap;"
+                                     class="d-flex justify-content-center">
+                                    <ul class="nav nav-pills nav-justified"
+                                        style="display: inline-block;  white-space: nowrap;" role="tablist">
+                                        {% for rec in  hotel_recc %}
+                                            <li class="nav-item waves-effect waves-light">
+                                                <a class="nav-link {% if forloop.counter == 1 %} active {% endif %}"
+                                                   data-toggle="tab"
+                                                   href="#hotel_day-{{ forloop.counter }}"
+                                                   role="tab">
+                                                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                                    <span class="d-none d-sm-block">Day {{ forloop.counter }}</span>
+                                                </a>
+                                            </li>
+
+
+                                        {% endfor %}
+
+                                    </ul>
+                                </div>
+                                {#                            END SECTION TO SHOW TABS FOR DAYS#}
+                                <!-- Tab panes -->
+                                <div class="tab-content p-3 text-muted">
+                                    {% for rec in hotel_recc %}
+                                        <div class="tab-pane {% if forloop.counter == 1 %} active {% endif %}"
+                                             id="hotel_day-{{ forloop.counter }}" role="tabpanel">
+                                            <div class="row d-flex justify-content-center">
+                                                <div class="col-lg-10">
+                                                    <div>
+                                                        {% if rec.image %}
+                                                            <img class="" src="{{ rec.image }}" alt="Card image"
+                                                                 height="200px"
+                                                                 width="200px">
+                                                        {% else %}
+                                                            <img class="" src="{% static 'images/hotels.png' %}"
+                                                                 alt="Card image"
+                                                                 height="200px" width="200px">
+                                                        {% endif %}
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">{{ rec.name }}</h5>
+                                                            <p>Price: <b>{{ rec.price }}</b></p>
+                                                            <p>Rating:<b> {{ rec.rating }}</b></p>
+                                                            <p>Experience: <b>{{ rec.experience }}</b></p>
+                                                            <p>Location: <b><a
+                                                                    href="https://maps.google.com/?q={{ rec.location }}">
+                                                                Click me </a> </b></p>
+                                                            <p>Address: <b>{{ rec.address }}</b></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    {#        RESTAURENT SECTION#}
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-lg-2 d-flex align-items-center ">
+                                <a class="nav-link text-primary font-size-14 font-weight-bold " href="#" id=""
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="bx bx-restaurant mr-2"></i>Restaurant
+                                </a>
+                            </div>
+                            <div class="col-lg-10">
+                                <!-- Nav tabs -->
+                                <div style="overflow-x: auto;  white-space: nowrap;"
+                                     class="d-flex justify-content-center">
+                                    <ul class="nav nav-pills nav-justified"
+                                        style="display: inline-block;  white-space: nowrap;" role="tablist">
+                                        {#                                    CREATING TABS OF DAYS FOR ATTRACTON RECOMMENDATION #}
+                                        {% for rec in restaurant_recc %}
+                                            <li class="nav-item waves-effect waves-light">
+                                                <a class="nav-link {% if forloop.counter == 1 %} active {% endif %}"
+                                                   data-toggle="tab"
+                                                   href="#rest_day-{{ forloop.counter }}"
+                                                   role="tab">
+                                                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                                    <span class="d-none d-sm-block">Day {{ forloop.counter }}</span>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {#                                                        END SECTION TO SHOW TABS FOR DAYS#}
+                                <!-- Tab panes -->
+                                <div class="tab-content p-3 text-muted">
+                                    {% for rec in restaurant_recc %}
+                                        <div class="tab-pane {% if forloop.counter == 1 %} active {% endif %}"
+
+                                             id="rest_day-{{ forloop.counter }}" role="tabpanel">
+                                            <div class="row d-flex justify-content-center">
+
+                                                <div class="col-lg-3 ">
+                                                    <h4>Breakfast</h4>
+                                                </div>
+                                                <div class="col-lg-3 ">
+                                                    <h4>Lunch</h4>
+                                                </div>
+                                                <div class="col-lg-3 ">
+                                                    <h4>Dinner</h4>
+                                                </div>
+                                            </div>
+                                            {#  FIRST ROW THAT DISPLAY RECOMENDATION 1 FOR BREAKFAST LUNCH AND DINNER#}
+                                            <div class="row d-flex justify-content-center ">
+                                                {#                                          BRASKFAST COLUMN #}
+                                                <div class="col-lg-3 d-flex flex-column">
+                                                    {% if rec.breakfast.0.image.0 %}
+                                                        <img class="" src="{{ rec.breakfast.0.image.0 }}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/hotels.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+
+                                                    <div class="card-body pl-0">
+                                                        <h5 class="card-title">{{ rec.breakfast.0.name }}</h5>
+                                                        <p>Category: <b>{{ rec.breakfast.0.categories }}</b></p>
+                                                        <p class="mt-auto">Location: <b><a
+                                                                href="https://maps.google.com/?q={{ rec.breakfast.0.location }}"
+                                                                target="_blank">{{ rec.breakfast.0.address }}</a></b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                {#                                LUNCH COLUMN       #}
+                                                <div class="col-lg-3 d-flex flex-column">
+                                                    {% if rec.lunch.0.image.0 %}
+                                                        <img class="" src="{{ rec.lunch.0.image.0 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/hotels.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <div class="card-body pl-0">
+                                                        <h5 class="card-title">{{ rec.lunch.0.name }}</h5>
+                                                        <p>Category: <b>{{ rec.lunch.0.categories }}</b></p>
+                                                        <p class="mt-auto">Location: <b><a
+                                                                href="https://maps.google.com/?q={{ rec.lunch.0.location }}"
+                                                                target="_blank"> {{ rec.lunch.0.address }} </a> </b></p>
+                                                    </div>
+                                                </div>
+                                                {#                                  DINNER COLUMN           #}
+                                                <div class="col-lg-3 d-flex flex-column">
+                                                    {% if rec.dinner.0.image.0 %}
+                                                        <img class="" src="{{ rec.dinner.0.image.0 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/hotels.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <div class="card-body pl-0">
+                                                        <h5 class="card-title">{{ rec.dinner.0.name }}</h5>
+                                                        <p>Category: <b>{{ rec.dinner.0.categories }}</b></p>
+                                                        <p class="mt-auto">Location: <b><a
+                                                                href="https://maps.google.com/?q={{ rec.dinner.0.location }}"
+                                                                target="_blank"> {{ rec.dinner.0.address }} </a> </b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {#                                        SECOND RECOMMENDATION #}
+                                            <div class="row d-flex justify-content-center ">
+                                                {#                                            BREAKFAST 2ND RECOMENDATION #}
+                                                <div class="col-lg-3 d-flex flex-column">
+                                                    {% if rec.breakfast.1.image.0 %}
+                                                        <img class="" src="{{ rec.breakfast.1.image.0 }}"
+                                                             alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/hotels.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <div class="card-body pl-0">
+                                                        <h5 class="card-title">{{ rec.breakfast.1.name }}</h5>
+                                                        <p>Category: <b>{{ rec.breakfast.1.categories }}</b></p>
+                                                        <p class="mt-auto">Location: <b><a
+                                                                href="https://maps.google.com/?q={{ rec.breakfast.1.location }}"
+                                                                target="_blank"> {{ rec.breakfast.1.address }} </a> </b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                {#                                LUNCH 2ND RECOMENDATION     #}
+                                                <div class="col-lg-3 d-flex flex-column">
+                                                    {% if rec.lunch.1.image.0 %}
+                                                        <img class="" src="{{ rec.lunch.1.image.0 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/hotels.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <div class="card-body pl-0">
+                                                        <h5 class="card-title">{{ rec.lunch.1.name }}</h5>
+                                                        <p>Category: <b>{{ rec.lunch.1.categories }}</b></p>
+                                                        <p class="mt-auto">Location: <b><a
+                                                                href="https://maps.google.com/?q={{ rec.lunch.1.location }}"
+                                                                target="_blank"> {{ rec.lunch.1.address }} </a> </b></p>
+                                                    </div>
+                                                </div>
+                                                {#                                           DINNER  2ND RECOMENDATION#}
+                                                <div class="col-lg-3 d-flex flex-column">
+                                                    {% if rec.dinner.1.image.0 %}
+                                                        <img class="" src="{{ rec.dinner.1.image.0 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/hotels.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <div class="card-body pl-0">
+                                                        <h5 class="card-title">{{ rec.dinner.1.name }}</h5>
+                                                        <p>Category: <b>{{ rec.dinner.1.categories }}</b></p>
+                                                        <p class="mt-auto">Location: <b><a
+                                                                href="https://maps.google.com/?q={{ rec.dinner.1.location }}"
+                                                                target="_blank"> {{ rec.dinner.1.address }} </a> </b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    {#        ATTRACTIONS SECTION #}
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-lg-2 d-flex align-items-center ">
+                                <a class="nav-link text-primary font-size-14 font-weight-bold " href="#" id=""
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="bx bx-landscape mr-2"></i>Attractions
+                                </a>
+                            </div>
+                            <div class="col-lg-10">
+                                <!-- Nav tabs -->
+                                {#                            TO SHOW TABS FOR DAYS #}
+                                <div style="overflow-x: auto;  white-space: nowrap;"
+                                     class="d-flex justify-content-center">
+                                    <ul class="nav nav-pills nav-justified"
+                                        style="display: inline-block;  white-space: nowrap;" role="tablist">
+                                        {% for rec in attraction_recc %}
+                                            <li class="nav-item waves-effect waves-light">
+                                                <a class="nav-link {% if forloop.counter == 1 %} active {% endif %}"
+                                                   data-toggle="tab"
+                                                   href="#day-{{ forloop.counter }}"
+                                                   role="tab">
+                                                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                                    <span class="d-none d-sm-block">Day {{ forloop.counter }}</span>
+                                                </a>
+                                            </li>
+
+
+                                        {% endfor %}
+
+                                    </ul>
+                                </div>
+                                {#                            END SECTION TO SHOW TABS FOR DAYS#}
+                                <!-- Tab panes -->
+                                <div class="tab-content p-3 text-muted">
+                                    {% for rec in attraction_recc %}
+                                        <div class="tab-pane {% if forloop.counter == 1 %} active {% endif %}"
+                                             id="day-{{ forloop.counter }}" role="tabpanel">
+
+                                            <div class="row d-flex justify-content-center">
+
+                                                <div class="col-lg-5 ">
+                                                    <h4>Morning</h4>
+                                                </div>
+                                                <div class="col-lg-5 ">
+                                                    <h4>Evening</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-center">
+                                                <div class="col-lg-5">
+                                                    {% if rec.images.0 %}
+                                                        <img class="" src="{{ rec.images.0 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/attractions.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+
+                                                    <h5 class="card-title">{{ rec.name.0 }}</h5>
+                                                    <p>Category: <b>{{ rec.category.0 }}</b></p>
+                                                    <p>Location: <b><a
+                                                            href="https://maps.google.com/?q={{ rec.location.0 }}">
+                                                        Click me </a> </b></p>
+                                                    <p>Price: <b>{{ rec.price.0 }}</b></p>
+                                                    <p>Rating:<b> {{ rec.rating.0 }}</b></p>
+
+                                                    <br>
+                                                    {% if rec.images.1 %}
+                                                        <img class="" src="{{ rec.images.1 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/attractions.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <h5 class="card-title">{{ rec.name.1 }}</h5>
+                                                    <p>Category: <b>{{ rec.category.1 }}</b></p>
+                                                    <p>Location: <b><a
+                                                            href="https://maps.google.com/?q={{ rec.location.1 }}">
+                                                        Click me </a> </b></p>
+                                                    <p>Price: <b>{{ rec.price.1 }}</b></p>
+                                                    <p>Rating:<b> {{ rec.rating.1 }}</b></p>
+
+
+                                                </div>
+                                                <div class="col-lg-5">
+                                                    {% if rec.images.2 %}
+                                                        <img class="" src="{{ rec.images.2 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/attractions.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <h5 class="card-title">{{ rec.name.2 }}</h5>
+                                                    <p>Category: <b>{{ rec.category.2 }}</b></p>
+                                                    <p>Location: <b><a
+                                                            href="https://maps.google.com/?q={{ rec.location.2 }}">
+                                                        Click me </a> </b></p>
+                                                    <p>Price: <b>{{ rec.price.2 }}</b></p>
+                                                    <p>Rating:<b> {{ rec.rating.2 }}</b></p>
+
+
+                                                    <br>
+                                                    {% if rec.images.3 %}
+                                                        <img class="" src="{{ rec.images.3 }}" alt="Card image"
+                                                             height="200px"
+                                                             width="200px">
+                                                    {% else %}
+                                                        <img class="" src="{% static 'images/attractions.png' %}"
+                                                             alt="Card image"
+                                                             height="200px" width="200px">
+                                                    {% endif %}
+                                                    <h5 class="card-title">{{ rec.name.3 }}</h5>
+                                                    <p>Category: <b>{{ rec.category.3 }}</b></p>
+                                                    <p>Location: <b><a
+                                                            href="https://maps.google.com/?q={{ rec.location.3 }}">
+                                                        Click me </a> </b></p>
+                                                    <p>Price: <b>{{ rec.price.3 }}</b></p>
+                                                    <p>Rating:<b> {{ rec.rating.3 }}</b></p>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <form id="save_plan_form" action="{% url 'save_plan' %}" method="post">
+                        {% csrf_token %}
+                        <input name="destination" value="{{ destination }}" hidden>
+                        <input name="begin_date" value="{{ begin_date }}" hidden>
+                        <input name="end_date" value="{{ end_date }}" hidden>
+                        <input name="people" value="{{ people }}" hidden>
+                        <input name="min_budget" value="{{ low }}" hidden>
+                        <input name="max_budget" value="{{ high }}" hidden>
+                        <input name="selected_attractions" value="{{ attractions_json }}" hidden>
+                        <input name="selected_cuisines" value="{{ cuisines_json }}" hidden>
+                        <input name="selected_amenities" value="{{ amenities_json }}" hidden>
+                        <input name="plan_attractions" value="'{{ attr_json }}'" hidden>
+                        <input name="plan_restaurants" value="{{ res_json }}" hidden>
+                        <input name="plan_hotels" value="{{ hotel_json }}" hidden>
+
+
+                    </form>
+                    <div class="row d-flex justify-content-end mb-4">
+                        <div class="navbar-brand-box">
+                            <button class="btn btn-primary" onclick="print()"> Print</button>
+                            &nbsp;
+                            <button class="btn btn-primary" onclick="save_plan()"> Save</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}
+{% block js %}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <script>
+        console.log('hey there')
+        {#console.log($('#plan_restaurants').val())#}
+        {#var myData = JSON.parse('{{ restaurant_recc|safe }}');#}
+
+        // You can now access the data in the variable using JavaScript
+        {#console.log(myData);#}
+
+        function save_plan() {
+
+            $('#save_plan_form').submit();
+
+        }
+
+
+    </script>
+{% endblock %}

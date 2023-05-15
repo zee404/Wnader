@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+    <!-- Select 2 css-->
+    <link href=" {% static 'libs/select2/css/select2.min.css" rel="stylesheet" type="text/css' %}"/>
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <link href="{% static 'libs/ion-rangeslider/css/ion.rangeSlider.min.css' %} " rel="stylesheet" type="text/css"/>
+
+{% endblock css %}
+{% block main-content %}
+    <div class="page-content pt-0">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-lg-12 mb-5">
+                    <div class="row d-flex align-items-stretch">
+                        <div class="col-lg-8 col-md-12 col-sm-12  pb-0 mb-0">
+                            <h1 class="mb-3 display-4 font-weight-bold text-primary" >WANDER AROUNT <br>WITH
+                                WANDER
+                            </h1>
+                            <h4>
+                                Our Website provides a number of services. Finding new restaurants and <br> attractions
+                                as
+                                well as booking hotels
+                            </h4>
+                            <br>
+                            <br>
+                            <h3 class="text-primary" > To Generate your trip plan</h3>
+
+                            <div class="card card-body mb-0">
+                                <form action="{% url 'generate_plan' %}" id="plan_form" method="post">
+                                    {% csrf_token %}
+                                    <input  id="attraction_dict" type="text" name="attraction_dict" value="" hidden>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-12 col-sm-12">
+                                            <h3 class="text-primary card-title mt-0">Destination</h3>
+                                             <input class="form-control" type="text" value="" name="destination"
+                                                   id="destination" >
+{#                                            <select class="form-control select2 " id="destination" name="destination">#}
+{#                                                <option value="-1">Select</option>#}
+{#                                                {% for destination in destinations %}#}
+{#                                                    <option value="{{ destination.id }}">{{ destination.name }}</option>#}
+{#                                                {% endfor %}#}
+{#                                            </select>#}
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12">
+                                            <h3 class="text-primary card-title mt-0">Date</h3>
+                                            <input type="text" class="form-control" name="daterange" id="daterange"
+                                                   value="01/01/2023 - 01/15/2023"/>
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12">
+                                            <h3 class="text-primary card-title mt-0">People</h3>
+                                            <input class="form-control" type="number" value="1" name="people"
+                                                   id="people">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 col-sm-12 p-0 mt-2">
+                                            <h3 class="text-primary card-title  mt-0">Budget</h3>
+                                            <input type="text" id="budget" name="budget">
+                                       </div>
+                                    <br>
+                                    <h4 class="mb-3 text-primary">Select your Preferences</h4>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <h3 class="text-primary card-title mt-0">Type of Attractions</h3>
+                                            <select class="select2 form-control select2-multiple" multiple="multiple"
+                                                    data-placeholder="Choose Attractions" name="attractions"
+                                                    id="attractions">
+                                                {% for attraction in attraction_categories %}
+                                                    <option value="{{ attraction.id }}">{{ attraction.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12">
+                                            <h3 class="text-primary card-title mt-0">Type of Cuisines</h3>
+                                            <select class="select2 form-control select2-multiple" multiple="multiple"
+                                                    data-placeholder="Choose Cuisines" name="cuisines" id="cuisines">
+                                                {% for cuisine in cuisines %}
+                                                    <option value="{{ cuisine.name }}">{{ cuisine.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 col-sm-12">
+                                            <h3 class="text-primary card-title mt-0">Type of Amenities</h3>
+                                            <select class="select2 form-control select2-multiple" multiple="multiple"
+                                                    data-placeholder="Choose Cuisines" name="amenities" id="amenities">
+                                                {% for amenity in amenities %}
+                                                    <option value="{{ amenity.name }}">{{ amenity.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 p-0 mt-2" id="attractionTags"></div>
+
+                                    <div class="col-lg-12 col-md-12 col-sm-12 d-flex  justify-content-end">
+                                        <button type="button" onclick="submit_form()"
+                                                class="btn btn-primary mt-auto btn-md px-4" >
+                                            PLAN
+                                        </button>
+                                    </div>
+                                </form>
+{#                                <a href="{% url 'test_attractions' %}" class="btn">test </a>#}
+                            </div>
+                        </div>
+
+                        <!-- Column for large screens, aligned to end (right) -->
+                        <div class="col-lg-4 d-lg-flex justify-content-end d-none d-lg-block">
+                          <img  src="{% static 'images/beach.jpg' %}" class="w-100 h-100" style="object-fit: cover;">
+                        </div>
+                        <!-- Column for medium and small screens, centered -->
+                        <div class="col-md-12 col-sm-12 d-flex justify-content-center d-lg-none">
+                          <img  src="{% static 'images/beach.jpg' %}" class="w-100 h-100" style="object-fit: cover;">
+                        </div>
+
+                    </div>
+                    <br>
+                    <br>
+
+                    <hr style="height: 18px; ">
+                       <br>
+                    <br>
+                    {#                    POPULAR HOTELS#}
+                    <div id="popolar_hotels">
+                    <h1 class="mb-3 ">POPULAR HOTELS</h1>
+                    <div class="row">
+                    {% for hotel in top_hotels %}
+                        <div class="col-md-3 col-xl-3">
+                            <!-- Simple card -->
+                            <div class="card w-75">
+                                <img class="card-img-top " src="{{ hotel.image }}" style="height: 200px"
+                                     alt="Card image cap">
+                                <div class="card-body">
+                                    <h4 class="card-title mt-0">{{ hotel.name }}</h4>
+                                    <p class="card-text">Rating:<b> {{ hotel.rating }}</b><br></p>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="#" class="btn btn-primary waves-effect waves-light">Save</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    </div>
+                       <br>
+                    <br>
+                    <div id="popular_restaurant">
+                    {#                    POPULAR ATTRACTIONS#}
+                    <h1 class="mb-3 ">POPULAR ATTRACTIONS</h1>
+                    <div class="row">
+                        {% for attraction in top_attractions %}
+                        <div class="col-md-3 col-xl-3">
+                            <!-- Simple card -->
+                            <div class="card w-75">
+                                <img class="card-img-top img-fluid" src="{{ attraction.image }}" style="height: 200px; "
+                                     alt="Card image cap">
+                                <div class="card-body">
+                                    <h4 class="card-title mt-0">{{ attraction.name }}</h4>
+                                     <p class="card-text">Rating:<b> {{ attraction.rating }}</b><br></p>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="#" class="btn btn-primary waves-effect waves-light">Save</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    </div>
+                       <br>
+                    <br>
+                    <div id="popular_attractions">
+
+                    {#                    POPULAR RESTAURANT#}
+                    <h1 class="mb-3 ">POPULAR RESTAURANTS </h1>
+                    <div class="row">
+                                            {% for restaurant in top_restaurant %}
+
+                        <div class="col-md-3 col-xl-3">
+                            <!-- Simple card -->
+                            <div class="card w-75">
+                                <img class="card-img-top img-fluid" src="{{ restaurant.image }}" style="height: 200px"
+                                     alt="Card image cap">
+                                <div class="card-body">
+                                    <h4 class="card-title mt-0">{{ restaurant.name }}</h4>
+                                     <p class="card-text">Rating:<b> {{ restaurant.review_star }}</b><br></p>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="#" class="btn btn-primary waves-effect waves-light">Save</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+         aria-hidden="true" id="attraction_rating_modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0 overflow-hidden" id="attraction_rating_title"></h5>
+                </div>
+                <div class="modal-body">
+                    <input type="text" min="0" max="5" class="attraction_rating" id="attraction_rating">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveRatingBtn" style="background-color: #023378">Add</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock main-content %}
+{% block js %}
+
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
+    <!-- Ion Range Slider-->
+    <script src="{% static 'libs/ion-rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+    <!-- Range slider init js-->
+    {#    <script src="{% static 'js/pages/range-sliders.init.js' %}"></script>#}
+
+    <script>
+        var selectedAttractions = [];
+        $(document).ready(function()  {
+            $('#daterange').daterangepicker({
+                opens: 'left'
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+            $(".attraction_rating").ionRangeSlider({skin: "round", min: 0, max: 5, from: 0})
+            $("#budget").ionRangeSlider({skin:"round",type:"double",grid:0,min:25,max:999,from:0,to:500})
+        });
+
+
+
+
+        {#    FOR DISPLAYING RATING PROMPT  AND SELECTED ATTACTION #}
+        $("#attractions").select2();
+
+
+        let lastSelectedOption = null; // Variable to keep track of the last selected option
+
+        $("#attractions").select2({
+            minimumSelectionLength:5,
+            tags: true,
+            createTag: function (params) {
+                // Allow manually entered tags
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newTag: true
+                };
+            }
+        }).on("select2:select", function (e) {
+            let selectedOption = e.params.data;
+              // Update the Select2 dropdown to remove the selected option
+            let dropdown = $(this).data('select2').dropdown.$dropdown;
+            dropdown.find(`[data-id='${selectedOption.id}']`).remove();
+
+            // Update the Select2 selection box to remove the selected option
+            $(this).find(`option[value='${selectedOption.id}']`).remove();
+            $(this).trigger('change');
+
+
+            $('#saveRatingBtn').off('click');
+            lastSelectedOption = selectedOption; // Update the last selected option
+
+            $('#attraction_rating_modal').modal('show');
+            $('#attraction_rating_title').text(selectedOption.text);
+
+
+            // Handle save button click in the modal
+            $('#saveRatingBtn').on('click', function () {
+                let rating = $('#attraction_rating').val();
+
+
+                // Update the selected attractions array or perform other actions as needed
+                selectedAttractions.push({attraction: selectedOption.id, rating: rating});
+                console.log(selectedAttractions)
+                // Add a tag or badge for the selected attraction
+                add_tag(selectedOption.text,rating);
+
+                // Reset the dropdown to its default state
+                this.selectedIndex = -1;
+               console.log(selectedAttractions);
+                // Close the modal
+                $(".attraction_rating").data("ionRangeSlider").update({
+                    from: 0
+                });
+                $('#attraction_dict').val(JSON.stringify(selectedAttractions))
+                $('#attraction_rating_modal').modal('hide');
+
+
+            });
+        });
+
+        function  add_tag(attraction, rating){
+             let tag = document.createElement("span");
+                tag.className = "badge badge-primary mx-1";
+                tag.textContent = attraction + " (" + rating + "/5) X";
+                tag.style.fontSize = "12px";
+                tag.style.background ="#023378"
+                // Add a click event listener to the tag to remove it when clicked
+                tag.addEventListener("click", function () {
+                    let index = selectedAttractions.findIndex(function (item) {
+                        return item.attraction === attraction;
+                    });
+                    selectedAttractions.splice(index, 1);
+                    this.remove();
+                });
+
+                // Append the tag to a container element
+                document.getElementById("attractionTags").appendChild(tag);
+        }
+        function submit_form(){
+                {#var selectedattraction = document.querySelectorAll('#attractions option:checked');#}
+                {#var selectedamenities = document.querySelectorAll('#amenities option:checked');#}
+                {##}
+                {#  if (selectedattraction.length < 5) {#}
+                {#    alert('Please select at least 5 attraction categories.');#}
+                {#    return;#}
+                {#  }#}
+                {#  if (selectedamenities.length < 5) {#}
+                {#    alert('Please select at least 5 attraction amenities.');#}
+                {#    return;#}
+                {#  }#}
+        $('#plan_form').submit()
+        }
+    </script>
+{% endblock %}
+
+

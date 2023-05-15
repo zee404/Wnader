@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main-content %}
+    <div class="page-content pt-0">
+    <div class="container-fluid ">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="mb-3 text-dark">Saved</h1>
+                <div class="row">
+                    {% for plan in plans %}
+                        <div class="col-md-3 col-xl-3 ">
+                            <!-- Simple card -->
+                            <div class="card w-75">
+                                <div class="card-body">
+                                    <h4 class="card-title mt-0">{{ plan.destination }}</h4>
+                                    <p class="card-text">Start Date:<b> {{ plan.start_date }}</b><br>
+                                        End Date: <b>{{ plan.end_date }}</b></p>
+
+                                    <div class="d-flex justify-content-end">
+                                        <form action="{% url 'remove_plan' plan.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary waves-effect waves-light justify-content-end"
+                                                    type="submit">Remove
+                                            </button>
+                                        </form>
+                                        {#                                        <a href="#"#}
+                                        {#                                           class="btn btn-primary waves-effect waves-light justify-content-end">Remove</a>#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <hr style="height: 18px; ">
+                {#                    POPULAR HOTELS#}
+
+                <div class="col-lg-12">
+                    <h1 class="mb-3 ">Previous Plan</h1>
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Destination</h3>
+                                <P> {{ last_plan.destination }}</P>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Date</h3>
+                                <p> {{ last_plan.start_date }} to {{ last_plan.end_date }}</p>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">People</h3>
+                                <p> {{ last_plan.people }}</p>
+                            </div>
+                        </div>
+                        <br>
+                        <h4 class="mb-3 ">Select your Preferences</h4>
+                        <div class="row">
+{#                            <p> {{ last_plan.attractions }}</p>#}
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Type of Attractions</h3>
+
+                                    <p>
+                                        {% for attraction in attractions %}
+                                            <span class="badge badge-pill badge-primary font-size-12">{{ attraction.attraction }}</span>
+                                        {% endfor %}
+                                    </p>
+
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Type of Cuisines</h3>
+                                <p>
+                                    {% for cuisine in cuisines %}
+                                        <span class="badge badge-pill badge-primary font-size-12">  {{ cuisine }} </span>
+
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            <div class="col-lg-12 col-sm-12 d-flex  justify-content-end">
+                                <button type="button" onclick="generate_plan()"
+                                        class="btn btn-primary mt-auto btn-md">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr style="height: 18px; ">
+                    {#                    PREFERENCES #}
+                    <h1 class="mb-3 ">Preferences</h1>
+                    <div class="card card-body">
+                        <div class="row">
+
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Type of Attractions</h3>
+                                <p>
+                                     {% for attraction in attractions %}
+                                            <span class="badge badge-pill badge-primary font-size-12">{{ attraction.attraction }}</span>
+                                        {% endfor %}
+                                </p>
+                            </div>
+                            <div class="col-lg-3 col-sm-12">
+                                <h3 class="card-title mt-0">Type of Cuisines</h3>
+                                <p>
+                                     {% for cuisine in cuisines %}
+                                        <span class="badge badge-pill badge-primary font-size-12">  {{ cuisine }} </span>
+
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            <div class="col-lg-12 col-sm-12 d-flex  justify-content-end">
+                                <button type="button" onclick="generate_plan()"
+                                        class="btn btn-primary mt-auto btn-md">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}
+{% block js %}
+
+{% endblock %}
+
+

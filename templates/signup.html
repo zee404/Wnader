@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main-content %}
+
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row justify-content-start">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <h1 class=" font-weight-bold text-primary"> Sign Up </h1>
+                    <br>
+                    <form class="form-horizontal" method="post" enctype="multipart/form-data"
+                          action="{% url 'signup' %}" id="signup_form">
+                        {% csrf_token %}
+                        <div class="form-group pb-2 ">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control" id="first_name" name="first_name"
+                                           placeholder="Enter First Name">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control" id="last_name" name="last_name"
+                                           placeholder="Enter Last Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group pb-2">
+                            <input type="email" class="form-control" id="user_email" name="user_email"
+                                   placeholder="Enter email" onkeyup="validateusername()" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="user_password"
+                                   name="user_password" placeholder="Enter password">
+                        </div>
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="mt-4">
+                            <button class="btn btn-primary  waves-effect waves-light text-white"
+                                    type="submit" id="btn_reg">Create Account
+                            </button>
+                        </div>
+                        <p class="font-weight-bold">Already Have an account ! <a href="{% url 'signin' %}"
+                                                                                 class="font-weight-medium text-primary">
+                            Signin </a></p>
+                    </form>
+                </div>
+                {#                <div class="col-md-8 col-lg-6 col-xl-5">#}
+                {#                    <div class="card overflow-hidden">#}
+                {#                        <div class="bg-soft-primary">#}
+                {#                            <div class="row">#}
+                {#                                <div class="col-7">#}
+                {#                                    <div class="text-primary p-4">#}
+                {#                                        <h5 class="text-primary"> Signup</h5>#}
+                {#                                        <p>Get your free wander account now.</p>#}
+                {#                                    </div>#}
+                {#                                </div>#}
+                {#                                <div class="col-5 align-self-end">#}
+                {#                                    <img src="{% static 'images/profile-img.png' %}" alt="" class="img-fluid">#}
+                {#                                </div>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                        <div class="card-body pt-0">#}
+                {#                            <div>#}
+                {#                                <a href="index.html">#}
+                {#                                    <div class="avatar-md profile-user-wid mb-4">#}
+                {#                                            <span class="avatar-title rounded-circle bg-light">#}
+                {#                                                <img src="{% static 'images/logo.svg' %}" alt="" class="rounded-circle"#}
+                {#                                                     height="34">#}
+                {#                                            </span>#}
+                {#                                    </div>#}
+                {#                                </a>#}
+                {#                            </div>#}
+                {#                            <div class="p-2">#}
+                {#                                <form class="form-horizontal" method="post" enctype="multipart/form-data"#}
+                {#                                      action="{% url 'signup' %}" id="signup_form">#}
+                {#                                    {% csrf_token %}#}
+                {#                                    <div class="form-group">#}
+                {#                                        <label for="first_name">First Name</label>#}
+                {#                                        <input type="text" class="form-control" id="first_name" name="first_name"#}
+                {#                                               placeholder="Enter First Name">#}
+                {#                                    </div>#}
+                {#                                    <div class="form-group">#}
+                {#                                        <label for="last_name">Last Name</label>#}
+                {#                                        <input type="text" class="form-control" id="last_name" name="last_name"#}
+                {#                                               placeholder="Enter Last Name">#}
+                {#                                    </div>#}
+                {#                                                                        <div class="form-group">#}
+                {#                                        <label for="user_email">Email</label>#}
+                {#                                        <input type="email" class="form-control" id="puser_email" name="user_email"#}
+                {#                                               placeholder="Enter email" onkeyup="validateusername()" required>#}
+                {#                                    </div>#}
+                {#                                    <div class="form-group">#}
+                {#                                        <label for="user_password">Password</label>#}
+                {#                                        <input type="password" class="form-control" id="user_password"#}
+                {#                                               name="user_password"#}
+                {#                                               placeholder="Enter password">#}
+                {#                                    </div>#}
+                {##}
+                {#                                    <div class="mt-4">#}
+                {#                                        <button class="btn btn-primary btn-block waves-effect waves-light"#}
+                {#                                                type="submit" id="btn_reg">Register#}
+                {#                                        </button>#}
+                {#                                    </div>#}
+                {##}
+                {#                                    <div class="mt-4 text-center">#}
+                {#                                        <p class="mb-0">By registering you agree to the Wander <a href="#"#}
+                {#                                                                                                 class="text-primary">Terms#}
+                {#                                            of Use</a></p>#}
+                {#                                    </div>#}
+                {#                                </form>#}
+                {#                            </div>#}
+                {##}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                    <div class="mt-5 text-center">#}
+                {#                        <p>Already have an account ? <a href="{% url 'signin' %}"#}
+                {#                                                        class="font-weight-medium text-primary">#}
+                {#                            Signin</a></p>#}
+                {##}
+                {#                    </div>#}
+                {##}
+                {#                </div>#}
+            </div>
+        </div>
+    </div>
+
+{% endblock main-content %}
+{% block js %}
+
+{% endblock js %}
