@@ -3,11 +3,13 @@ import pandas as pd
 from bing_image_downloader import downloader
 import re
 from urllib.parse import quote
+import os
 import glob
 from models.utils import Util
 
 
 class get_recomendation:
+
     def __init__(self, categories) -> None:
         weight_path = "models/hybrid_model/weight/"
         # load the model from a file
@@ -27,27 +29,45 @@ class get_recomendation:
                 'review_star'].mean().unstack().fillna(0)
         self.business_data = pd.read_csv('models/hybrid_model/data/business_restaurant_clean.csv')
 
-    def get_image(self, name):
-        # print(name)
+    def get_image(self,name):
         util = Util()
+
         name = name.replace("_", " ")
 
-        dir_path = "media/downloads"
-        try:
-            cont = util.check_string(name)
-            if cont:
-                name = util.remove_special_characters(name)
-            downloader.download(name, limit=1, output_dir=dir_path, adult_filter_off=True, force_replace=False,
-                                timeout=60)
+        # Sanitize 'name' to remove characters not allowed in Windows file/directory names
+        invalid_chars = '<>:"/\\|?*'
+        for ch in invalid_chars:
+            name = name.replace(ch, "_")
 
-            for filename in glob.glob("media/downloads/{name}/*jpg".format(name=name)) + glob.glob(
-                    "media/downloads/{name}/*png".format(name=name)):
-                return filename
-        except Exception as e:
-            # print(e)
-            # for filename in glob.glob("downloads/*jpg"):
-            #     return filename
-            return None
+        dir_path = "media/downloads"
+        file_path = os.path.join(dir_path, name)
+
+        # Check if the directory exists, and if not, create it
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+
+        # Try to find the file with the expected name in the directory
+        file_exists = any(os.path.isfile(os.path.join(file_path, f)) for f in os.listdir(file_path) if
+                          f.endswith(('.png', '.jpg', '.jpeg')))
+
+        # If the file does not exist, download it
+        if not file_exists:
+            try:
+                cont = util.check_string(name)
+                if cont:
+                    name = util.remove_special_characters(name)
+
+                downloader.download(name, limit=1, output_dir=dir_path, adult_filter_off=True, force_replace=False, timeout=60)
+
+                for filename in glob.glob(f"{file_path}/*jpg") + glob.glob(f"{file_path}/*png"):
+                    return filename
+            except Exception as e:
+                print(e)
+                return None
+        else:
+            # Return the existing file path
+            existing_files = glob.glob(f"{file_path}/*jpg") + glob.glob(f"{file_path}/*png")
+            return existing_files[0] if existing_files else None
 
     def get_kmeans_recc(self, user_id):
         reviews_data_kmeans = self.reviews_data_kmeans.loc[self.reviews_data_kmeans['user_id'] == user_id]

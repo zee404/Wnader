@@ -208,27 +208,42 @@ def filter_df(filename, user, low, high, country, att_df):
 
 
 def get_image(name):
-    # print(name)
+    # Assuming the Util class has the methods used below
     util = Util()
     name = name.replace("_", " ")
+    # Sanitize 'name' to remove characters not allowed in Windows file/directory names
+    invalid_chars = '<>:"/\\|?*'
+    for ch in invalid_chars:
+        name = name.replace(ch, "_")
 
     dir_path = "media/downloads"
-    try:
-        cont = util.check_string(name)
-        if cont:
-            name = util.remove_special_characters(name)
+    file_path = os.path.join(dir_path, name)
 
-        downloader.download(name, limit=1, output_dir=dir_path, adult_filter_off=True, force_replace=False, timeout=60)
-        # print("download: ", resp)
-        for filename in glob.glob("media/downloads/{name}/*jpg".format(name=name)) + glob.glob(
-                "media/downloads/{name}/*png".format(name=name)):
-            return filename
-    except Exception as e:
-        # print(e)
-        # for filename in glob.glob("downloads/*jpg"):
-        #     return filename
-        return None
+    # Check if the directory exists, and if not, create it
+    if not os.path.exists(file_path):
+        os.makedirs(file_path) # Construct the file path where you expect the image to be
 
+    # Try to find the file with the expected name in the directory
+    file_exists = any(os.path.isfile(os.path.join(file_path, f)) for f in os.listdir(file_path) if f.endswith(('.png', '.jpg', '.jpeg')))
+
+    # If the file does not exist, download it
+    if not file_exists:
+        try:
+            cont = util.check_string(name)
+            if cont:
+                name = util.remove_special_characters(name)
+
+            downloader.download(name, limit=1, output_dir=dir_path, adult_filter_off=True, force_replace=False, timeout=60)
+
+            for filename in glob.glob(f"{file_path}/*jpg") + glob.glob(f"{file_path}/*png"):
+                return filename
+        except Exception as e:
+            print(e)
+            return None
+    else:
+        # Return the existing file path
+        existing_files = glob.glob(f"{file_path}/*jpg") + glob.glob(f"{file_path}/*png")
+        return existing_files[0] if existing_files else None
 
 def top_recc(with_url, final):
     # print(with_url)

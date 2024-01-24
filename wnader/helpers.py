@@ -89,7 +89,7 @@ def get_hot_recommendation(name, destination, begin_date, end_date, amenities):
     final['image'] = [get_image(i) for i in recc[:days]['hotel_name'].values.tolist()]
 
     result = []
-    # CREATING A JSON FOR EACH DAY FOR THE PLAN DAYYS THAT CONTAIN INFORMATION FOR HOTEL
+    # CREATING A JSON FOR EACH DAY FOR THE PLAN DAYS THAT CONTAIN INFORMATION FOR HOTEL
     for i in range(days):
         recom = {}
         recom['name'] = final['name'][i]
